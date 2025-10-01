@@ -1,0 +1,88 @@
+-- 1. Select all the data of passengers whose last name is same as first name.
+SELECT * 
+FROM passengers 
+WHERE first_name = last_name;
+
+-- 2. Select the last name of all passengers without duplicates.
+SELECT DISTINCT last_name 
+FROM passengers;
+
+-- 3. Find all male passengers born between 1990 and 2000.
+SELECT * 
+FROM passengers 
+WHERE gender = 'Male' 
+AND birth_date BETWEEN '1990-01-01' AND '2000-12-31';
+
+-- 4. Find price of tickets sold for each month in sorted way.
+SELECT 
+    EXTRACT(YEAR FROM created_at) AS year,
+    EXTRACT(MONTH FROM created_at) AS month,
+    SUM(price) as total_price
+FROM tickets 
+GROUP BY year, month 
+ORDER BY year, month;
+
+-- 5. Create a query that shows all flights flying to 'China'.
+SELECT * 
+FROM flights 
+WHERE destination_country = 'China';
+
+-- 6. Show airlines from any of: ('France','Portugal','Poland') created between '2023-11-01' and '2024-03-31'.
+SELECT * 
+FROM airlines 
+WHERE country IN ('France','Portugal','Poland') 
+AND created_at BETWEEN '2023-11-01' AND '2024-03-31';
+
+-- 7. Find all airline names based in Kazakhstan.
+SELECT airline_name 
+FROM airlines 
+WHERE country = 'Kazakhstan';
+
+-- 8. Reduce the cost of booking price by 10% created before '2023-11-01'.
+UPDATE bookings 
+SET price = price * 0.9 
+WHERE created_at < '2023-11-01';
+
+-- 9. Find top3 overweighted baggage with more than 25kg.
+SELECT * 
+FROM baggage 
+WHERE weight > 25 
+ORDER BY weight DESC 
+LIMIT 3;
+
+-- 10. Find the youngest passengers' full name.
+SELECT first_name || ' ' || last_name as full_name
+FROM passengers 
+ORDER BY birth_date DESC 
+LIMIT 1;
+
+-- 11. Find the cheapest booking price on each booking platform.
+SELECT 
+    platform,
+    MIN(price) as cheapest_price
+FROM bookings 
+GROUP BY platform;
+
+-- 12. Return airlines whose airline_code contains a digit.
+SELECT * 
+FROM airlines 
+WHERE airline_code ~ '[0-9]';
+-- Альтернатива для MySQL: WHERE airline_code REGEXP '[0-9]';
+
+-- 13. List the top5 most recently created airlines.
+SELECT * 
+FROM airlines 
+ORDER BY created_at DESC 
+LIMIT 5;
+
+-- 14. Return all rows where booking_id is between 200 and 300 inclusive and check_result <> 'Checked'.
+SELECT * 
+FROM bookings 
+WHERE booking_id BETWEEN 200 AND 300 
+AND check_result != 'Checked';
+
+-- 15. Baggage checks where update_at is in the same month as created_at but occurs earlier than created_at.
+SELECT * 
+FROM baggage_checks 
+WHERE EXTRACT(YEAR_MONTH FROM update_at) = EXTRACT(YEAR_MONTH FROM created_at)
+AND update_at < created_at;
